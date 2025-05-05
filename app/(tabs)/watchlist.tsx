@@ -1,18 +1,16 @@
 import { StyleSheet, FlatList, Text, ActivityIndicator } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import React from 'react';
-import { fetchTopRatedMovies } from '@/api/movies';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import MovieListItem from '@/components/MovieListItem';
 import { StatusBar } from 'expo-status-bar';
+import { fetchMovieWatchlist } from '@/api/watchlist';
 
-export default function HomeScreen() {
-  const {data, isLoading, error, fetchNextPage} = useInfiniteQuery({
-    queryKey: ['movies'],
-    queryFn: ({pageParam}) => fetchTopRatedMovies(pageParam),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, pages) => pages.length + 1,
+export default function Watchlist() {
+  const {data: watchlist, isLoading, error} = useQuery({
+    queryKey: ['watchlist'],
+    queryFn: fetchMovieWatchlist,
   })
 
   if (isLoading) {
@@ -23,24 +21,19 @@ export default function HomeScreen() {
     return <Text>{error.message}</Text>
   }
 
-  const movies = data?.pages.flat();
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <StatusBar />
       <ThemedView style={styles.titleContainer}>
         {/* <Text style={styles.heading}>Movies</Text> */}
         <FlatList
-          data={movies}
+          data={watchlist}
           numColumns={2}
           contentContainerStyle={{gap: 5}}
           columnWrapperStyle={{gap: 5}}
           renderItem={({ item }) => (
             <MovieListItem movie={item}/>
           )}
-          onEndReached={() => {
-            fetchNextPage();
-          }}
 
         />
       </ThemedView>
