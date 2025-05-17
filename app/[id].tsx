@@ -1,5 +1,5 @@
 import { View, Text, ActivityIndicator, StyleSheet, Image, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useLocalSearchParams } from 'expo-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { fetchMovieDetails } from '@/api/movies'
